@@ -12,6 +12,13 @@ project(tinyxml2)
 include(GNUInstallDirs)
 #enable_testing()
 
+IF(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY )
+	SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib" )
+ENDIF(  )
+IF(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY )
+	SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib" )
+ENDIF(  )
+
 #CMAKE_BUILD_TOOL
 
 ################################
@@ -60,8 +67,8 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 # User can choose not to build shared library by using cmake -BUILD_SHARED_LIBS:BOOL:OFF
 # To build only static libs use cmake . -DBUILD_SHARED_LIBS:BOOL=OFF -DBUILD_STATIC_LIBS:BOOL=ON
 
-option(BUILD_SHARED_LIBS "build as shared library" ON)
-option(BUILD_STATIC_LIBS "build as static library" OFF)
+option(BUILD_SHARED_LIBS "build as shared library" OFF)
+option(BUILD_STATIC_LIBS "build as static library" ON)
 
 if(BUILD_SHARED_LIBS)
 add_library(tinyxml2 SHARED tinyxml2.cpp tinyxml2.h)
@@ -125,3 +132,9 @@ configure_file(
 
 add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+
+if ( MSVC )
+    set_target_properties( tinyxml2_static PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/../../../libs )
+    set_target_properties( tinyxml2_static PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${PROJECT_BINARY_DIR}/../../../libs )
+    set_target_properties( tinyxml2_static PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${PROJECT_BINARY_DIR}/../../../libs )
+endif ( MSVC )
